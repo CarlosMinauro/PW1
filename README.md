@@ -2,44 +2,56 @@
 
 Este proyecto es una aplicación full stack construida con tecnologías modernas. Consiste en un frontend construido con Vite + React + TypeScript y un backend construido con Express + Node.js + TypeScript.
 
-## Archivos y Directorios a Crear Manualmente
+## Archivos y Directorios a Crear/Asegurar
 
-### Backend
-1. Crear directorio `backend`:
-```bash
-mkdir backend
-```
+Para que la aplicación funcione correctamente, es importante tener la estructura de archivos adecuada. Aquí se detalla qué directorios y archivos se generan automáticamente al iniciar los proyectos y cuáles necesitarás crear o asegurar manualmente:
 
-2. Crear directorio `src` dentro de backend:
-```bash
-cd backend
-mkdir src
-```
+### Backend (`backend/`)
 
-3. Crear archivo `.env` en la raíz del backend:
-```bash
-touch .env
-```
+La mayoría de los archivos y directorios iniciales del backend se crean manualmente, excepto `package.json` y `package-lock.json` que son generados por npm.
 
-4. Crear archivo `index.ts` dentro de src:
-```bash
-touch src/index.ts
-```
+1.  **Directorio `backend/`**: Debes crearlo manualmente.
+    ```bash
+    mkdir backend
+    ```
 
-5. Crear archivo `tsconfig.json` en la raíz del backend:
-```bash
-touch tsconfig.json
-```
+2.  **Directorio `backend/src/`**: Debes crearlo manualmente dentro de `backend/`.
+    ```bash
+    cd backend
+    mkdir src
+    ```
 
-### Frontend
-El frontend se crea automáticamente con Vite, pero necesitarás crear los siguientes archivos y directorios para la funcionalidad de navegación:
-1. Directorio `src/pages`:
-```bash
-mkdir src/pages
-```
-2. Archivo `src/pages/MenuPage.tsx`
-3. Archivo `src/pages/LibrosPage.tsx`
-4. Archivo `src/pages/VideojuegosPage.tsx`
+3.  **Archivo `backend/.env`**: Debes crearlo manualmente en la raíz del backend.
+    ```bash
+    touch .env
+    ```
+
+4.  **Archivo `backend/src/index.ts`**: Debes crearlo manualmente dentro de `backend/src/`.
+    ```bash
+    touch src/index.ts
+    ```
+
+5.  **Archivo `backend/tsconfig.json`**: Debes crearlo manualmente en la raíz del backend.
+    ```bash
+    touch tsconfig.json
+    ```
+
+6.  **Archivos `backend/package.json` y `backend/package-lock.json`**: Estos archivos se generan automáticamente al ejecutar `npm init -y` y `npm install` dentro del directorio `backend/`.
+
+### Frontend (`frontendv1/`)
+
+El frontend se genera en gran parte automáticamente con Vite. Después de crear el proyecto con `npm create vite@latest frontendv1 -- --template react-ts`, Vite creará la estructura básica, incluyendo directorios como `src/` y archivos como `App.tsx`, `main.tsx` (originalmente `main.ts`), `index.css`, `App.css`, `package.json`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `index.html`, etc. en la raíz de `frontendv1/`.
+
+Sin embargo, para la funcionalidad de navegación específica de esta aplicación, necesitarás crear los siguientes archivos y directorios adicionales:
+
+1.  **Directorio `frontendv1/src/pages/`**: Debes crearlo manualmente.
+    ```bash
+    mkdir src/pages
+    ```
+
+2.  **Archivo `frontendv1/src/pages/MenuPage.tsx`**: Debes crearlo manualmente.
+3.  **Archivo `frontendv1/src/pages/LibrosPage.tsx`**: Debes crearlo manualmente.
+4.  **Archivo `frontendv1/src/pages/VideojuegosPage.tsx`**: Debes crearlo manualmente.
 
 ## Estructura del Proyecto
 
