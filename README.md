@@ -358,79 +358,140 @@ app.listen(port, () => {
     ```
     El frontend se ejecutará en `http://localhost:5173`.
 
-## Interacción Frontend-Backend (Sin Base de Datos)
+## Interacción Frontend-Backend (Sin Base de Datos) y Cómo se Conectan
 
-Para demostrar la comunicación entre el frontend y el backend sin la necesidad de una base de datos, se ha implementado una funcionalidad de saludo personalizado:
+Para que la aplicación funcione como un todo, el frontend y el backend necesitan comunicarse. Aquí se explica cómo lo hacen:
 
-*   **Endpoint del Backend:** El backend expone un endpoint en `POST /api/saludar` que recibe un nombre y devuelve un saludo personalizado.
-*   **Funcionalidad en el Frontend:** En la `MenuPage` (`frontendv1/src/pages/MenuPage.tsx`), se ha añadido un botón "SALUDAR BACKEND". Al hacer clic en este botón, el frontend envía el nombre del usuario al backend y muestra el saludo personalizado recibido en la misma página.
+### **1. Estructura Inicial del Proyecto (Lo que ya deberías tener o crear manualmente):**
 
-Esta característica permite verificar que el backend está activo y puede procesar datos enviados desde el frontend, devolviendo una respuesta personalizada.
+En la raíz de tu proyecto (por ejemplo, `PWejer1`), deberías tener dos carpetas principales:
+*   `frontendv1/` (para la parte de React)
+*   `backend/` (para la parte de Express/Node.js)
+
+**Creación de Archivos y Directorios Cruciales (Manual o con comandos):**
+
+Aunque Vite crea gran parte del frontend, hay algunos archivos y directorios clave que necesitarás asegurarte de que existan:
+
+*   **En la carpeta `backend/`:**
+    *   `backend/src/`: Aquí irá el código fuente de tu servidor.
+    *   `backend/.env`: Para tus variables de entorno (como el puerto del servidor).
+    *   `backend/src/index.ts`: El archivo principal de tu servidor.
+    *   `backend/tsconfig.json`: La configuración de TypeScript para el backend.
+
+*   **En la carpeta `frontendv1/src/`:**
+    *   `frontendv1/src/pages/`: Este directorio contendrá las diferentes páginas de tu aplicación.
+    *   Asegúrate de que dentro de `frontendv1/src/pages/` existan estos archivos:
+        *   `MenuPage.tsx`
+        *   `LibrosPage.tsx`
+        *   `VideojuegosPage.tsx`
+
+### **2. Proceso de Creación y Configuración (Instalación de Dependencias):**
+
+Para que el proyecto funcione, necesitas instalar las librerías necesarias para cada parte.
+
+*   **Para el Frontend (`frontendv1`):**
+    1.  Abre tu terminal en el directorio `frontendv1/`.
+    2.  Instala las dependencias principales y de enrutamiento:
+        ```bash
+        cd frontendv1
+        npm install react-router-dom
+        npm install --save-dev @types/react-dom
+        ```
+
+*   **Para el Backend (`backend`):**
+    1.  Abre tu terminal en el directorio `backend/`.
+    2.  Inicializa el proyecto de Node.js e instala las dependencias:
+        ```bash
+        cd backend
+        npm init -y
+        npm install express cors dotenv typescript ts-node @types/node @types/express @types/cors
+        ```
+
+### **3. Modificaciones Clave en el Código (Lo que se ha cambiado/configurado):**
+
+Aquí están los puntos más importantes que se han modificado o configurado en el código:
+
+*   **Frontend (`frontendv1`)**
+    *   **Punto de Entrada (`frontendv1/index.html` y `frontendv1/src/main.tsx`):**
+        *   Se renombró `src/main.ts` a `src/main.tsx` para que React con TypeScript funcione correctamente.
+        *   El archivo `index.html` ahora apunta a `src/main.tsx` como el punto de entrada de la aplicación.
+    *   **Componente Principal (`frontendv1/src/App.tsx`):**
+        *   Configurado con `react-router-dom` para manejar la navegación entre las diferentes páginas (`/`, `/libros`, `/videojuegos`).
+    *   **Páginas de Navegación (`frontendv1/src/pages/`):**
+        *   `MenuPage.tsx`: Es la página principal con botones para navegar a "LIBROS" y "VIDEOJUEGOS". **Importante:** También contiene un campo para ingresar un nombre y un botón "SALUDAR BACKEND" que interactúa con el servidor.
+        *   `LibrosPage.tsx`: Muestra el nombre del usuario recibido a través del `state` de `react-router-dom`.
+        *   `VideojuegosPage.tsx`: Obtiene y muestra el nombre del usuario almacenado en `sessionStorage`.
+    *   **Estilos (`frontendv1/src/App.css`):** Contiene estilos básicos para la presentación de los componentes.
+
+*   **Backend (`backend`)**
+    *   **Configuración de TypeScript (`backend/tsconfig.json`):** Configurado para compilar el código TypeScript a JavaScript en el directorio `dist/`.
+    *   **Archivo Principal del Servidor (`backend/src/index.ts`):**
+        *   Utiliza `express` para el servidor web, `cors` para permitir la comunicación entre frontend y backend, y `dotenv` para cargar variables de entorno (como el puerto).
+        *   **Endpoint clave:** Define una ruta `POST` en `/api/saludar`. Este endpoint recibe un nombre del frontend y devuelve un saludo personalizado.
+        *   **Código del Endpoint:**
+            ```typescript
+            import express from 'express';
+            import cors from 'cors';
+            import dotenv from 'dotenv';
+
+            dotenv.config();
+
+            const app = express();
+            const port = process.env.PORT || 3000;
+
+            app.use(cors());
+            app.use(express.json());
+
+            // Ruta para saludar
+            app.post('/api/saludar', (req, res) => {
+              const { name } = req.body;
+              res.json({ message: `¡Hola, ${name}!` });
+            });
+
+            app.listen(port, () => {
+              console.log(`Server is running on port ${port}`);
+            });
+            ```
+    *   **Scripts de Ejecución (`backend/package.json`):** Contiene scripts para iniciar el servidor en modo desarrollo (`npm run dev`), construir el proyecto (`npm run build`), y ejecutarlo en producción (`npm start`).
+
+### **4. Cómo Ejecutar la Aplicación:**
+
+Para ver la aplicación funcionando, debes iniciar tanto el backend como el frontend.
+
+1.  **Iniciar el Backend:**
+    *   Abre una terminal.
+    *   Navega al directorio `backend/`.
+    *   Ejecuta: `npm run dev`
+    *   Verás un mensaje indicando que el servidor está corriendo en `http://localhost:3000`.
+
+2.  **Iniciar el Frontend (`frontendv1`):**
+    *   Abre **otra terminal** (mantén la del backend abierta y corriendo).
+    *   Navega al directorio `frontendv1/`.
+    *   Ejecuta: `npm run dev`
+    *   Verás un mensaje indicando que el frontend está corriendo en `http://localhost:5173`.
+
+Una vez ambos estén corriendo, abre tu navegador y ve a `http://localhost:5173`.
+
+### **5. Cómo se Realiza la Conexión entre Frontend y Backend:**
+
+La comunicación entre el frontend y el backend se implementa a través de una solicitud HTTP:
+
+*   **En el Frontend (`frontendv1/src/pages/MenuPage.tsx`):**
+    *   Cuando haces clic en el botón "SALUDAR BACKEND", se activa la función `handleSaludarBackendClick`.
+    *   Esta función hace una solicitud `POST` a la URL `http://localhost:3000/api/saludar`.
+    *   Envía un objeto JSON en el cuerpo de la solicitud con el nombre que ingresaste en el campo de texto (ej. `{ "name": "TuNombre" }`).
+    *   Espera una respuesta del backend.
+
+*   **En el Backend (`backend/src/index.ts`):**
+    *   El servidor de Express tiene definida la ruta `app.post('/api/saludar', ...)`.
+    *   Cuando recibe la solicitud `POST` a esa ruta, extrae el `name` del cuerpo de la solicitud (`req.body.name`).
+    *   Construye un mensaje de saludo personalizado (ej. "¡Hola, TuNombre!").
+    *   Envía este mensaje como una respuesta JSON al frontend (ej. `{ "message": "¡Hola, TuNombre!" }`).
+
+De esta manera, el frontend envía datos al backend y el backend los procesa para devolver una respuesta dinámica, demostrando una interacción básica entre ambas partes de la aplicación.
 
 ## Endpoints de la API
 
 ### Endpoints del Backend
 -   `POST /api/saludar`: Recibe un objeto JSON con un nombre y devuelve un saludo personalizado.
   - **Request Body:** `{ "name": "string" }`
-  - **Response:** `{ "message": "¡Hola, {name}!" }`
-
-## Notas de Desarrollo
-
--   El backend utiliza TypeScript para mayor seguridad de tipos y mejor experiencia de desarrollo.
--   CORS está habilitado para permitir la comunicación entre frontend y backend.
--   Las variables de entorno son soportadas a través de dotenv.
--   El frontend utiliza Vite para desarrollo rápido y construcción.
--   Los componentes de React están escritos en TypeScript para mejor verificación de tipos.
-
-## Variables de Entorno
-
-Backend (`.env`):
-```
-PORT=3000
-```
-
-## Dependencias
-
-### Dependencias del Backend
--   `express`: Framework web.
--   `cors`: Compartir recursos entre orígenes.
--   `dotenv`: Variables de entorno.
--   `typescript`: Soporte para TypeScript.
--   `ts-node`: Ejecución de TypeScript.
--   `@types/*`: Definiciones de tipos para TypeScript.
-
-### Dependencias del Frontend (`frontendv1`)
--   `react`: Biblioteca de UI.
--   `react-router-dom`: Enrutamiento para React.
--   `@types/react-dom`: Definiciones de tipos para `react-dom`.
--   `typescript`: Soporte para TypeScript.
--   `vite`: Herramienta de construcción y servidor de desarrollo.
-
-## Comandos Útiles
-
-### Backend
-```bash
-# Desarrollo
-npm run dev
-
-# Construcción
-npm run build
-
-# Producción
-npm start
-
-# Observar cambios
-npm run watch
-```
-
-### Frontend (`frontendv1`)
-```bash
-# Desarrollo
-npm run dev
-
-# Construcción
-npm run build
-
-# Vista previa de producción
-npm run preview
-``` 
